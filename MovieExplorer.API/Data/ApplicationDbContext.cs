@@ -12,15 +12,9 @@ namespace MovieExplorer.API.Data
         }
 
         public DbSet<Movie> Movies { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<MovieLike> MovieLikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<MovieLike>()
-                .HasIndex(ml => new { ml.UserId, ml.MovieId })
-                .IsUnique();
-
             base.OnModelCreating(modelBuilder);
         }
     }

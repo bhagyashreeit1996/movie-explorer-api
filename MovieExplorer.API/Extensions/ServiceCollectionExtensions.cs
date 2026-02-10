@@ -12,8 +12,6 @@ namespace MovieExplorer.API.Extensions
         {
             // Repository registrations
             services.AddScoped<IMovieRepository, MovieRepository>();
-            services.AddScoped<IMovieLikeRepository, MovieLikeRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
 
             // Service registrations
             services.AddScoped<IMovieService, MovieService>();
