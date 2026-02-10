@@ -1,6 +1,6 @@
-﻿using MovieExplorer.API.DTOs;
+﻿using MovieExplorer.API.Application.DTOs;
 
-namespace MovieExplorer.API.Interfaces
+namespace MovieExplorer.API.Core.Interfaces
 {
     public interface IMovieService
     {

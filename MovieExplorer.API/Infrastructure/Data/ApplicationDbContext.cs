@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MovieExplorer.API.Data;
-using MovieExplorer.API.Models;
+using MovieExplorer.API.Infrastructure.Data;
+using MovieExplorer.API.Core.Models;
 
-namespace MovieExplorer.API.Data
+namespace MovieExplorer.API.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {

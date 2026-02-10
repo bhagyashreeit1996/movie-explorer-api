@@ -4,62 +4,41 @@ MovieExplorer is a RESTful Web API built with **ASP.NET Core** and **Entity Fram
 
 ---
 
-## 🌍 Database Strategy
+---
 
-To ensure **perfect consistency** with your Windows-based team, we use **SQL Server for everything**.
+## 📂 Project Structure (Enterprise Ready)
 
-- **Mac (You):** Run SQL Server in Docker.
-- **Windows:** Run SQL Server natively.
+The project follows a tiered monolithic structure to separate concerns and ensure high maintainability:
 
-This ensures your migration files and database schema stay identical across the whole team.
+- **`MovieExplorer.API/Core/`**: The heart of the app (Models, Interfaces).
+- **`MovieExplorer.API/Application/`**: The business logic (Services, DTOs).
+- **`MovieExplorer.API/Infrastructure/`**: The technical data layer (DbContext, Repos, Migrations).
 
 ---
 
-## 🚀 Getting Started (Mac)
+## 📖 Project Guides
 
-1. **Install Docker Desktop**.
-2. **Run the setup script**:
-   ```bash
-   ./setup-mac.sh
-   ```
-3. **Start the app**:
-   ```bash
-   cd MovieExplorer.API
-   dotnet run
-   ```
+- **[🍎 macOS Setup Guide](./mac/README.md)**: How to run the project locally with Docker.
+- **[🚀 Features & Roadmap](./features/README.md)**: What this API currently does and what's next.
 
 ---
 
-## 💻 Team Workflow
+## 🛠️ Adding a New Feature (Onboarding)
 
-- **Shared code:** Both platforms share the **exact same** migration files in git.
-- **Consistent Schema:** No `TEXT` vs `nvarchar` issues.
+When adding a new feature (e.g., "Users" or "Reviews"), follow these steps to maintain our enterprise structure:
 
----
-
-## 🛠️ Tech Stack
-
-- **.NET 8.0**
-- **ASP.NET Core Web API**
-- **Entity Framework Core**
-- **SQL Server** (Docker on Mac / Native on Windows)
-- **Swagger UI** (Access at `http://localhost:5123/swagger`)
-
----
-
-## 📂 Project Structure
-
-- `MovieExplorer.API/` - Main Web API project
-- `setup-mac.sh` - Automation script for Mac setup
-- `docker-compose.yml` - SQL Server container for Mac
-- `.vscode/` - Recommended VS Code configurations (Debug with F5!)
+1.  **Define the Model**: Create a new class in `MovieExplorer.API/Core/Models`.
+2.  **Contract (Interface)**: Define your repository/service needs in `MovieExplorer.API/Core/Interfaces`.
+3.  **Update Database**: Add a `DbSet` to `MovieExplorer.API/Infrastructure/Data/ApplicationDbContext.cs`.
+4.  **Implement Data Access**: Write the database logic in `MovieExplorer.API/Infrastructure/Repositories`.
+5.  **Wire Up**: Register your new logic in `MovieExplorer.API/Extensions/ServiceCollectionExtensions.cs`.
+6.  **Create Endpoint**: Add a new Controller in `Controllers/` that uses your interface.
 
 ---
 
 ## 🔧 Troubleshooting
 
-If you run into database issues after pulling new changes:
-```bash
-dotnet ef database update
-```
-*(Requires `dotnet-ef` tool. The setup script installs this for you!)*
+If you change a model or pull new changes:
+1. **Create a migration**: `dotnet ef migrations add <Name>`
+2. **Apply to DB**: `dotnet ef database update`
+*(Note: Always run EF commands from the `MovieExplorer.API` directory.)*

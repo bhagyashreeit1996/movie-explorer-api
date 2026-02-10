@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using MovieExplorer.API.Data;
-using MovieExplorer.API.Interfaces;
-using MovieExplorer.API.Repositories;
-using MovieExplorer.API.Services;
+using MovieExplorer.API.Infrastructure.Data;
+using MovieExplorer.API.Core.Interfaces;
+using MovieExplorer.API.Infrastructure.Repositories;
+using MovieExplorer.API.Application.Services;
 
 namespace MovieExplorer.API.Extensions
 {

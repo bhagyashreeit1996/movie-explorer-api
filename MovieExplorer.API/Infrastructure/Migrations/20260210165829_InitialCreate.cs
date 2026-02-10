@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace MovieExplorer.API.Migrations
+namespace MovieExplorer.API.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

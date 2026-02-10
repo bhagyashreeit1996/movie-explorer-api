@@ -1,4 +1,4 @@
-﻿namespace MovieExplorer.API.DTOs
+﻿namespace MovieExplorer.API.Application.DTOs
 {
     public class MovieDto
     {

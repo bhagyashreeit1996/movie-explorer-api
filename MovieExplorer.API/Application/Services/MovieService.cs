@@ -1,10 +1,10 @@
-﻿using MovieExplorer.API.DTOs;
-using MovieExplorer.API.Interfaces;
-using MovieExplorer.API.Models;
-using MovieExplorer.API.Services;
+﻿using MovieExplorer.API.Application.DTOs;
+using MovieExplorer.API.Core.Interfaces;
+using MovieExplorer.API.Core.Models;
+using MovieExplorer.API.Application.Services;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
-namespace MovieExplorer.API.Services
+namespace MovieExplorer.API.Application.Services
 {
     public class MovieService : IMovieService
     {
