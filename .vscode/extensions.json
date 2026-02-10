@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "jmrog.vscode-nuget-package-manager",
+        "kreativ-software.csharpextensions",
+        "patcx.vscode-nuget-gallery"
+    ]
+}

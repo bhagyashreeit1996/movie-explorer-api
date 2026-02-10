@@ -12,8 +12,8 @@ using MovieExplorer.API.Data;
 namespace MovieExplorer.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260209112022_MovieExplorerDB")]
-    partial class MovieExplorerDB
+    [Migration("20260210145645_InitialDevelopment")]
+    partial class InitialDevelopment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

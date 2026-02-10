@@ -3,6 +3,7 @@ using MovieExplorer.API.Data;
 using MovieExplorer.API.Interfaces;
 using MovieExplorer.API.Repositories;
 using MovieExplorer.API.Services;
+using MovieExplorer.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,14 +14,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddScoped<IMovieRepository, MovieRepository>();
-builder.Services.AddScoped<IMovieLikeRepository, MovieLikeRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IMovieService, MovieService>();
+// Configure database and application services using modular extension methods
+builder.Services.AddDatabaseServices(builder.Configuration);
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
