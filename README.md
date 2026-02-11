@@ -4,27 +4,41 @@ MovieExplorer is a RESTful Web API built with **ASP.NET Core** and **Entity Fram
 
 ---
 
-## 🚀 Features
+---
 
-- Search movies by title
-- Store movies using IMDb ID
-- Like movies (user-based)
-- SQL Server database integration
-- Entity Framework Core with migrations
-- Swagger UI for API testing
+## 📂 Project Structure (Enterprise Ready)
+
+The project follows a tiered monolithic structure to separate concerns and ensure high maintainability:
+
+- **`MovieExplorer.API/Core/`**: The heart of the app (Models, Interfaces).
+- **`MovieExplorer.API/Application/`**: The business logic (Services, DTOs).
+- **`MovieExplorer.API/Infrastructure/`**: The technical data layer (DbContext, Repos, Migrations).
 
 ---
 
-## 🛠️ Tech Stack
+## 📖 Project Guides
 
-- **.NET 7 / .NET 8**
-- **ASP.NET Core Web API**
-- **Entity Framework Core**
-- **SQL Server**
-- **Swagger (Swashbuckle)**
-- **Visual Studio / VS Code**
+- **[🍎 macOS Setup Guide](./mac/README.md)**: How to run the project locally with Docker.
+- **[🚀 Features & Roadmap](./features/README.md)**: What this API currently does and what's next.
 
 ---
 
-## 📂 Project Structure
+## 🛠️ Adding a New Feature (Onboarding)
 
+When adding a new feature (e.g., "Users" or "Reviews"), follow these steps to maintain our enterprise structure:
+
+1.  **Define the Model**: Create a new class in `MovieExplorer.API/Core/Models`.
+2.  **Contract (Interface)**: Define your repository/service needs in `MovieExplorer.API/Core/Interfaces`.
+3.  **Update Database**: Add a `DbSet` to `MovieExplorer.API/Infrastructure/Data/ApplicationDbContext.cs`.
+4.  **Implement Data Access**: Write the database logic in `MovieExplorer.API/Infrastructure/Repositories`.
+5.  **Wire Up**: Register your new logic in `MovieExplorer.API/Extensions/ServiceCollectionExtensions.cs`.
+6.  **Create Endpoint**: Add a new Controller in `Controllers/` that uses your interface.
+
+---
+
+## 🔧 Troubleshooting
+
+If you change a model or pull new changes:
+1. **Create a migration**: `dotnet ef migrations add <Name>`
+2. **Apply to DB**: `dotnet ef database update`
+*(Note: Always run EF commands from the `MovieExplorer.API` directory.)*

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MovieExplorer.API.Data;
-using MovieExplorer.API.Interfaces;
-using MovieExplorer.API.Models;
+using MovieExplorer.API.Infrastructure.Data;
+using MovieExplorer.API.Core.Interfaces;
+using MovieExplorer.API.Core.Models;
 
-namespace MovieExplorer.API.Repositories
+namespace MovieExplorer.API.Infrastructure.Repositories
 {
     public class MovieRepository : IMovieRepository
     {

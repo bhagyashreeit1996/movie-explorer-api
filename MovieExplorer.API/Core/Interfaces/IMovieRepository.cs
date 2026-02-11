@@ -1,6 +1,6 @@
-﻿using MovieExplorer.API.Models;
+﻿using MovieExplorer.API.Core.Models;
 
-namespace MovieExplorer.API.Interfaces
+namespace MovieExplorer.API.Core.Interfaces
 {
     public interface IMovieRepository
     {

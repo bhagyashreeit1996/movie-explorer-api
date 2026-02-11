@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MovieExplorer.API.Data;
-using MovieExplorer.API.Models;
+using MovieExplorer.API.Infrastructure.Data;
+using MovieExplorer.API.Core.Models;
 
-namespace MovieExplorer.API.Data
+namespace MovieExplorer.API.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
@@ -12,15 +12,9 @@ namespace MovieExplorer.API.Data
         }
 
         public DbSet<Movie> Movies { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<MovieLike> MovieLikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<MovieLike>()
-                .HasIndex(ml => new { ml.UserId, ml.MovieId })
-                .IsUnique();
-
             base.OnModelCreating(modelBuilder);
         }
     }
