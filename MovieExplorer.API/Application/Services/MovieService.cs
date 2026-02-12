@@ -3,6 +3,8 @@ using MovieExplorer.API.Core.Interfaces;
 using MovieExplorer.API.Core.Models;
 using MovieExplorer.API.Application.Services;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using Microsoft.EntityFrameworkCore;
+using MovieExplorer.API.DTOs;
 
 namespace MovieExplorer.API.Application.Services
 {
@@ -15,27 +17,35 @@ namespace MovieExplorer.API.Application.Services
             _movieRepository = movieRepository;
         }
 
-        public async Task<List<MovieDto>> SearchMoviesAsync(string query)
+        public async Task<PagedResponse<MovieDto>> SearchMoviesAsync(SearchMoviesRequest request)
         {
-            // TEMP: Fake data for learning (external API comes later)
-            var movie = new Movie("tt001", query, 2024, "Drama");
+            if (string.IsNullOrWhiteSpace(request.Query))
+                throw new ArgumentException("Search query is required.");
 
-            if (!await _movieRepository.ExistsAsync(movie.MovieId))
-            {
-                await _movieRepository.AddAsync(movie);
-            }
+            var (movies, totalCount) = await _movieRepository.SearchAsync(
+                request.Query,
+                request.PageNumber,
+                request.PageSize,
+                request.SortBy,
+                request.IsDescending);
 
-            return new List<MovieDto>
+            var dtoList = movies.Select(m => new MovieDto
             {
-                new MovieDto
-                {
-                    MovieId = movie.MovieId,
-                    Title = movie.Title,
-                    Year = movie.Year,
-                    Genre = movie.Genre
-                }
+                MovieId = m.MovieId,
+                Title = m.Title,
+                Year = m.Year,
+                Genre = m.Genre
+            }).ToList();
+
+            return new PagedResponse<MovieDto>
+            {
+                TotalCount = totalCount,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize,
+                Data = dtoList
             };
         }
+
     }
 }
 
