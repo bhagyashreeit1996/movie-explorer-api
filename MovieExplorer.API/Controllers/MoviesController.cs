@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieExplorer.API.Core.Interfaces;
+using MovieExplorer.API.DTOs;
 
 namespace MovieExplorer.API.Controllers
 {
@@ -15,15 +16,17 @@ namespace MovieExplorer.API.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> Search([FromQuery] string query)
+        public async Task<IActionResult> Search([FromQuery] SearchMoviesRequest request)
         {
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                return BadRequest("Search query is required");
-            }
+            if (string.IsNullOrWhiteSpace(request.Query))
+                return BadRequest("Search query is required.");
 
-            var movies = await _movieService.SearchMoviesAsync(query);
-            return Ok(movies);
+            if (request.PageNumber <= 0 || request.PageSize <= 0)
+                return BadRequest("Invalid pagination parameters.");
+
+            var result = await _movieService.SearchMoviesAsync(request);
+
+            return Ok(result);
         }
     }
 }
