@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { searchMovies, likeMovie } from "../services/api";
+import MovieDetails from "./MovieDetails";
 
 function SearchMovies({ refreshLikes }) {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
 
   const handleSearch = async () => {
     try {
@@ -42,7 +44,7 @@ function SearchMovies({ refreshLikes }) {
     catch (error) {
         console.error(error);
 
-        alert("Unable to like movie.");
+        alert("Movie already liked.");
     }
 };
 
@@ -101,12 +103,23 @@ function SearchMovies({ refreshLikes }) {
                       </small>
                     </div>
 
-                    <button
-                      className="btn btn-success btn-sm"
-                      onClick={() => handleLike(movie.movieId)}
-                    >
-                      Like
-                    </button>
+                    <div>
+
+                      <button
+                        className="btn btn-success btn-sm me-2"
+                        onClick={() => handleLike(movie.movieId)}
+                      >
+                        Like
+                      </button>
+
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => setSelectedMovieId(movie.movieId)}
+                      >
+                        View Details
+                      </button>
+
+                    </div>
 
                   </li>
                 ))}
@@ -117,6 +130,13 @@ function SearchMovies({ refreshLikes }) {
 
         </div>
       </div>
+
+      {selectedMovieId && (
+        <MovieDetails
+          movieId={selectedMovieId}
+          onClose={() => setSelectedMovieId(null)}
+        />
+      )}
 
     </div>
   );

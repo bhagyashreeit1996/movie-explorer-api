@@ -37,4 +37,9 @@ export const getLikedMovies = async (pageNumber, pageSize) => {
   return response.data;
 };
 
+export const getMovieDetails = async (movieId) => {
+  const response = await api.get(`/movies/${movieId}/details`);
+  return response.data;
+};
+
 

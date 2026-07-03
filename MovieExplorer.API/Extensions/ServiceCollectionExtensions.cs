@@ -25,6 +25,8 @@ namespace MovieExplorer.API.Extensions
 
             services.AddScoped<IAuthService, AuthService>();
 
+            services.AddScoped<IOmdbService, OmdbService>();
+
             return services;
         }
 
