@@ -1,86 +1,111 @@
 import React, { useEffect, useState } from "react";
 import { getLikedMovies, unlikeMovie } from "../services/api";
 
-function LikedMovies({ refresh }) {
+function LikedMovies({ refresh, onLikedMoviesLoaded }) {
   const [movies, setMovies] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize] = useState(2);
   const [totalCount, setTotalCount] = useState(0);
 
   const fetchLikes = async () => {
-  try {
-    const result = await getLikedMovies(
-      pageNumber,
-      pageSize
-    );
+    try {
+      const result = await getLikedMovies(pageNumber, pageSize);
 
-    console.log("Likes API Response:", result);
-
-    setMovies(result.data || []);
-    setTotalCount(result.totalCount || 0);
-  }
-  catch (error) {
-    console.error("Likes API Error:", error);
-  }
-};
-
-const handleUnlike = async (movieId) => {
-  try {
-    await unlikeMovie(movieId);
-
-    fetchLikes();
-  }
-  catch (error) {
-    console.error(error);
-  }
-};
+      setMovies(result.data);
+      setTotalCount(result.totalCount);
+      if (onLikedMoviesLoaded) {
+          onLikedMoviesLoaded(result.totalCount);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Unable to load liked movies.");
+    }
+  };
 
   useEffect(() => {
     fetchLikes();
   }, [refresh, pageNumber]);
 
+  const handleUnlike = async (movieId) => {
+    try {
+      await unlikeMovie(movieId);
+
+      alert("Movie unliked successfully.");
+
+      fetchLikes();
+    } catch (error) {
+      console.error(error);
+      alert("Unable to unlike movie.");
+    }
+  };
+
   return (
-    <div className="container mt-3">
+    <div className="container mt-4">
       <div className="card shadow-sm">
-      <div className="card-body">
-      <h2>Liked Movies</h2>
+        <div className="card-body">
 
-      <ul>
-        {movies.map((movie) => (
-          <li key={movie.movieId}>
-            {movie.title} ({movie.year})
+          <h3 className="card-title mb-3">
+            ❤️ Liked Movies
+          </h3>
 
-            <button
-              onClick={() =>
-                handleUnlike(movie.movieId)
-              }
-            >
-              Unlike
-            </button>
-          </li>
-        ))}
-      </ul>
+          {movies.length === 0 ? (
+            <p>No liked movies found.</p>
+          ) : (
+            <>
+              <ul className="list-group">
 
-      <div>
-        <button
-          disabled={pageNumber === 1}
-          onClick={() => setPageNumber(pageNumber - 1)}
-        >
-          Previous
-        </button>
+                {movies.map((movie) => (
+                  <li
+                    key={movie.movieId}
+                    className="list-group-item d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <strong>{movie.title}</strong>
+                      <br />
 
-        <span style={{ margin: "0 10px" }}>
-          Page {pageNumber}
-        </span>
+                      <small>
+                        {movie.year} | {movie.genre}
+                      </small>
+                    </div>
 
-        <button
-          disabled={pageNumber * pageSize >= totalCount}
-          onClick={() => setPageNumber(pageNumber + 1)}
-        >
-          Next
-        </button>
-      </div>
-      </div>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleUnlike(movie.movieId)}
+                    >
+                      Unlike
+                    </button>
+                  </li>
+                ))}
+
+              </ul>
+
+              <div className="d-flex justify-content-between mt-3">
+
+                <button
+                  className="btn btn-secondary"
+                  disabled={pageNumber === 1}
+                  onClick={() => setPageNumber(pageNumber - 1)}
+                >
+                  Previous
+                </button>
+
+                <span className="align-self-center">
+                  Page {pageNumber}
+                </span>
+
+                <button
+                  className="btn btn-secondary"
+                  disabled={pageNumber * pageSize >= totalCount}
+                  onClick={() => setPageNumber(pageNumber + 1)}
+                >
+                  Next
+                </button>
+
+              </div>
+            </>
+          )}
+
+        </div>
       </div>
     </div>
   );
