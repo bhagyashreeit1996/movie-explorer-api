@@ -10,18 +10,20 @@ using System.Security.Claims;
 
 namespace MovieExplorer.API.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route("api/movies")]
     public class MoviesController : ControllerBase
     {
         private readonly IMovieService _movieService;
         private readonly ILikeService _likeService;
+        private readonly IOmdbService _omdbService;
 
-        public MoviesController(IMovieService movieService, ILikeService likeService)
+        public MoviesController(IMovieService movieService, ILikeService likeService, IOmdbService omdbService)
         {
             _movieService = movieService;
             _likeService = likeService;
+            _omdbService = omdbService;
         }
 
         [HttpGet("search")]
@@ -75,6 +77,20 @@ namespace MovieExplorer.API.Controllers
             await _likeService.UnlikeMovieAsync(userId, movieId);
 
             return Ok("Movie unliked successfully.");
+        }
+
+        
+        [HttpGet("{movieId}/details")]
+        public async Task<IActionResult> GetMovieDetails(string movieId)
+        {
+            var movie = await _omdbService.GetMovieDetailsAsync(movieId);
+
+            if (movie == null)
+            {
+                return NotFound("Movie not found.");
+            }
+
+            return Ok(movie);
         }
 
     }
