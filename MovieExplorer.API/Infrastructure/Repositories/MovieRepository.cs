@@ -20,6 +20,13 @@ namespace MovieExplorer.API.Infrastructure.Repositories
                 .FirstOrDefaultAsync(m => m.MovieId == movieId);
         }
 
+        public async Task<List<Movie>> GetMoviesByIdsAsync(List<string> movieIds)
+        {
+            return await _context.Movies
+                .Where(m => movieIds.Contains(m.MovieId))
+                .ToListAsync();
+        }
+
         public async Task<bool> ExistsAsync(string movieId)
         {
             return await _context.Movies

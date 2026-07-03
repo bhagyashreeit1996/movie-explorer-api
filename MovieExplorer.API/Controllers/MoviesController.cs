@@ -1,18 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MovieExplorer.API.Application.DTOs;
+using MovieExplorer.API.Core.DTOs;
+using MovieExplorer.API.Core.Exceptions;
 using MovieExplorer.API.Core.Interfaces;
 using MovieExplorer.API.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace MovieExplorer.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/movies")]
     public class MoviesController : ControllerBase
     {
         private readonly IMovieService _movieService;
+        private readonly ILikeService _likeService;
 
-        public MoviesController(IMovieService movieService)
+        public MoviesController(IMovieService movieService, ILikeService likeService)
         {
             _movieService = movieService;
+            _likeService = likeService;
         }
 
         [HttpGet("search")]
@@ -28,6 +37,46 @@ namespace MovieExplorer.API.Controllers
 
             return Ok(result);
         }
+
+        [Authorize]
+        [HttpPost("{movieId}/like")]
+        public async Task<IActionResult> LikeMovie(string movieId)
+        {
+            var userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            await _likeService.LikeMovieAsync(userId, movieId);
+
+            return Ok("Movie liked successfully.");
+        }
+
+        [HttpGet("/api/users/likes")]
+        public async Task<IActionResult> GetLikedMovies(
+        
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 5)
+        {
+            var userId = int.Parse(
+            User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var result = await _likeService
+                .GetLikedMoviesAsync(userId, pageNumber, pageSize);
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpDelete("{movieId}/like")]
+        public async Task<IActionResult> UnlikeMovie(string movieId)
+        {
+            var userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            await _likeService.UnlikeMovieAsync(userId, movieId);
+
+            return Ok("Movie unliked successfully.");
+        }
+
     }
 }
 
