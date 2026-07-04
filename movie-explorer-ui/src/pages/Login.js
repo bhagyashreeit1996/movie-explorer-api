@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API_BASE = "https://localhost:7176/api";
 
@@ -21,12 +22,12 @@ function Login({ onLogin, onRegister })  {
 
       localStorage.setItem("token", token);
 
-      alert("Login Successful");
+      toast.success("Login successful!");
 
       onLogin();
     }
     catch (error) {
-      alert("Invalid Email or Password");
+      toast.error("Invalid email or password.");
       console.error(error);
     }
   };

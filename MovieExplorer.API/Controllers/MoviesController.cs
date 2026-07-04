@@ -58,8 +58,13 @@ namespace MovieExplorer.API.Controllers
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 5)
         {
-            var userId = int.Parse(
-            User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (claim == null)
+            {
+                return Unauthorized("User identifier claim is missing.");
+            }
+            var userId = int.Parse(claim.Value);
 
             var result = await _likeService
                 .GetLikedMoviesAsync(userId, pageNumber, pageSize);

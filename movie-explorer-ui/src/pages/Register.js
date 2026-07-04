@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API_BASE = "https://localhost:7176/api";
 
@@ -16,11 +17,11 @@ function Register({ onBackToLogin }) {
         password
       });
 
-      alert("Registration successful!");
+      toast.success("Registration successful!");
 
       onBackToLogin();
     } catch (error) {
-      alert("Registration failed.");
+      toast.error("Registration failed.");
       console.error(error);
     }
   };
