@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { getCurrentUser } from "./services/api";
+import Profile from "./pages/Profile";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -22,6 +23,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [likedCount, setLikedCount] = useState(0);
   const [user, setUser] = useState(null);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
   if (isLoggedIn) {
@@ -86,6 +88,7 @@ function App() {
     <Navbar
         onLogout={handleLogout}
         user={user}
+        onProfile={() => setShowProfile(true)}
     />
 
     <div className="container mt-4">
@@ -96,17 +99,23 @@ function App() {
           pageNumber={currentPage}
       />
 
-      <SearchMovies
-        refreshLikes={refreshLikes}
-        onSearchCompleted={handleSearchCompleted}
-      />
+      {showProfile ? (
+          <Profile user={user} />
+      ) : (
+          <>
+              <SearchMovies
+                  refreshLikes={refreshLikes}
+                  onSearchCompleted={handleSearchCompleted}
+              />
 
-      <hr />
+              <hr />
 
-      <LikedMovies
-          refresh={refresh}
-          onLikedMoviesLoaded={handleLikedMoviesLoaded}
-      />
+              <LikedMovies
+                  refresh={refresh}
+                  onLikedMoviesLoaded={handleLikedMoviesLoaded}
+              />
+          </>
+      )}
 
     </div>
 

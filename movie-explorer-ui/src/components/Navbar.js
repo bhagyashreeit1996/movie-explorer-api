@@ -1,6 +1,10 @@
 import React from "react";
 
-function Navbar({ onLogout, user }) {
+function Navbar({
+    onLogout,
+    user,
+    onProfile
+}) {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow">
 
@@ -12,9 +16,12 @@ function Navbar({ onLogout, user }) {
 
         <div className="ms-auto d-flex align-items-center">
 
-          <span className="text-white me-3">
+          <button
+              className="btn btn-link text-white text-decoration-none me-3"
+              onClick={onProfile}
+          >
               👋 Welcome, {user?.name}
-          </span>
+          </button>
 
           <button
             className="btn btn-outline-light"
