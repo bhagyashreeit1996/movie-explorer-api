@@ -1,6 +1,6 @@
 import React from "react";
 
-function Navbar({ onLogout }) {
+function Navbar({ onLogout, user }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow">
 
@@ -13,7 +13,7 @@ function Navbar({ onLogout }) {
         <div className="ms-auto d-flex align-items-center">
 
           <span className="text-white me-3">
-            👋 Welcome
+              👋 Welcome, {user?.name}
           </span>
 
           <button
