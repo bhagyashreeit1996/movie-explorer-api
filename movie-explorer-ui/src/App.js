@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -86,6 +88,11 @@ function App() {
       />
 
     </div>
+
+    <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    />
 
   </>
   );

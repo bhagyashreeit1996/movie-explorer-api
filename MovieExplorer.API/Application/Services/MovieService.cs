@@ -34,7 +34,9 @@ namespace MovieExplorer.API.Application.Services
                 MovieId = m.MovieId,
                 Title = m.Title,
                 Year = m.Year,
-                Genre = m.Genre
+                Genre = m.Genre,
+                Poster = "https://via.placeholder.com/300x450?text=Movie",
+                ImdbRating = "N/A"
             }).ToList();
 
             return new PagedResponse<MovieDto>

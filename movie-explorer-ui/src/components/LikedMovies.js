@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getLikedMovies, unlikeMovie } from "../services/api";
+import { toast } from "react-toastify";
 
 function LikedMovies({ refresh, onLikedMoviesLoaded }) {
   const [movies, setMovies] = useState([]);
@@ -18,7 +19,7 @@ function LikedMovies({ refresh, onLikedMoviesLoaded }) {
       }
     } catch (error) {
       console.error(error);
-      alert("Unable to load liked movies.");
+      toast.error("Unable to unlike movie.");
     }
   };
 
@@ -30,7 +31,7 @@ function LikedMovies({ refresh, onLikedMoviesLoaded }) {
     try {
       await unlikeMovie(movieId);
 
-      alert("Movie unliked successfully.");
+      toast.success("Movie removed from liked list.");
 
       fetchLikes();
     } catch (error) {

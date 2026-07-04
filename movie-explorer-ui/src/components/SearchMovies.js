@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { searchMovies, likeMovie } from "../services/api";
 import MovieDetails from "./MovieDetails";
 import MovieCard from "./MovieCard";
+import { toast } from "react-toastify";
 
 function SearchMovies({ refreshLikes, onSearchCompleted }) {
   const [query, setQuery] = useState("");
@@ -12,7 +13,7 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
   const handleSearch = async () => {
       try {
         if (!query.trim()) {
-          alert("Please enter movie name");
+          toast.warning("Please enter a movie name.");
           return;
         }
 
@@ -32,7 +33,7 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
 
       } catch (error) {
         console.error(error);
-        alert("Error searching movies");
+        toast.error("Error searching movies.");
       } finally {
         setLoading(false);
       }
@@ -42,14 +43,14 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
     try {
         await likeMovie(movieId);
 
-        alert("Movie liked successfully.");
+        toast.success("Movie liked successfully!");
 
         refreshLikes();
     }
     catch (error) {
         console.error(error);
 
-        alert("Movie already liked.");
+        toast.error("Movie already liked.");
     }
 };
 

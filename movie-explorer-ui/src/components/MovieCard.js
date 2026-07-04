@@ -1,14 +1,16 @@
 import React from "react";
 
-function MovieCard({
-  movie,
-  onLike,
-  onDetails
-}) {
+function MovieCard({ movie, onLike, onDetails }) {
   return (
     <div className="col-md-4 mb-4">
+      <div className="card h-100 shadow border-0">
 
-      <div className="card h-100 shadow-sm border-0">
+        <img
+          src={movie.poster}
+          className="card-img-top"
+          alt={movie.title}
+          style={{ height: "420px", objectFit: "cover" }}
+        />
 
         <div className="card-body">
 
@@ -16,13 +18,24 @@ function MovieCard({
             {movie.title}
           </h5>
 
-          <p className="text-muted mb-1">
+          <p className="text-muted">
             📅 {movie.year}
           </p>
 
-          <p>
-            {movie.genre}
-          </p>
+          <span className="badge bg-warning text-dark mb-2">
+            ⭐ IMDb {movie.imdbRating}
+          </span>
+
+          <div className="mb-3">
+            {movie.genre.split(",").map((genre) => (
+              <span
+                key={genre}
+                className="badge bg-primary me-1"
+              >
+                {genre.trim()}
+              </span>
+            ))}
+          </div>
 
         </div>
 
@@ -45,7 +58,6 @@ function MovieCard({
         </div>
 
       </div>
-
     </div>
   );
 }
