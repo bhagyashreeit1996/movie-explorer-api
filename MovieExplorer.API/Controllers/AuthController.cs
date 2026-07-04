@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MovieExplorer.API.Core.DTOs;
 using MovieExplorer.API.Core.Interfaces;
+using System.Security.Claims;
 
 namespace MovieExplorer.API.Controllers
 {
@@ -34,6 +36,22 @@ namespace MovieExplorer.API.Controllers
                     .LoginAsync(request);
 
             return Ok(response);
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var user = await _authService
+                .GetCurrentUserAsync(userId);
+
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
         }
     }
 }

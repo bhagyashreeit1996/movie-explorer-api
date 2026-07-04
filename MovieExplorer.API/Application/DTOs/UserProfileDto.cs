@@ -1,14 +1,12 @@
-﻿namespace MovieExplorer.API.Core.Models
+﻿namespace MovieExplorer.API.Core.DTOs
 {
-    public class User
+    public class UserProfileDto
     {
         public int UserId { get; set; }
 
         public string Name { get; set; }
 
         public string Email { get; set; }
-
-        public string PasswordHash { get; set; }
 
     }
 }

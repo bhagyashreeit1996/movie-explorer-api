@@ -7,6 +7,8 @@ namespace MovieExplorer.API.Core.Interfaces
         Task RegisterAsync(RegisterRequest request);
 
         Task<AuthResponse> LoginAsync(LoginRequest request);
+
+        Task<UserProfileDto?> GetCurrentUserAsync(int userId);
     }
 
 }

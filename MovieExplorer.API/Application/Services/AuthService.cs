@@ -103,5 +103,20 @@ namespace MovieExplorer.API.Core.Services
             return new JwtSecurityTokenHandler()
                 .WriteToken(token);
         }
+
+        public async Task<UserProfileDto?> GetCurrentUserAsync(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+                return null;
+
+            return new UserProfileDto
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Email = user.Email
+            };
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace MovieExplorer.API.Core.Interfaces
         Task<User?> GetByIdAsync(int userId);
 
         Task AddAsync(User user);
+
     }
 }

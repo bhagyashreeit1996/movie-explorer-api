@@ -7,6 +7,8 @@ import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
+import { getCurrentUser } from "./services/api";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -19,6 +21,22 @@ function App() {
   const [searchCount, setSearchCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [likedCount, setLikedCount] = useState(0);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+  if (isLoggedIn) {
+    loadCurrentUser();
+  }
+  }, [isLoggedIn]);
+
+  const loadCurrentUser = async () => {
+  try {
+    const result = await getCurrentUser();
+    setUser(result);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   const refreshLikes = () => {
     setRefresh(!refresh);
@@ -65,7 +83,10 @@ function App() {
   return (
   <>
 
-    <Navbar onLogout={handleLogout} />
+    <Navbar
+        onLogout={handleLogout}
+        user={user}
+    />
 
     <div className="container mt-4">
 
