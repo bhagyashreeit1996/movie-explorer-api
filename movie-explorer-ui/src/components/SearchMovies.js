@@ -1,14 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { searchMovies, likeMovie } from "../services/api";
 import MovieDetails from "./MovieDetails";
 import MovieCard from "./MovieCard";
 import { toast } from "react-toastify";
+import { getMovieSuggestions } from "../services/api";
 
 function SearchMovies({ refreshLikes, onSearchCompleted }) {
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const [movies, setMovies] = useState([]);
+  const [likedMovies, setLikedMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
+  
+  useEffect(() => {
+
+      const timer = setTimeout(() => {
+
+          setDebouncedQuery(query);
+
+      }, 300);
+
+      return () => clearTimeout(timer);
+
+  }, [query]);
+
+  useEffect(() => {
+
+        if (debouncedQuery.trim().length < 2) {
+            setSuggestions([]);
+            return;
+        }
+
+        const fetchSuggestions = async () => {
+
+            try {
+
+                const result =
+                    await getMovieSuggestions(debouncedQuery);
+
+                setSuggestions(result);
+
+            }
+            catch (error) {
+                console.error(error);
+            }
+
+        };
+
+        fetchSuggestions();
+
+    }, [debouncedQuery]);
 
   const handleSearch = async () => {
       try {
@@ -39,9 +82,15 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
       }
     };
 
+  const loadSuggestions = (value) => {
+      setQuery(value);
+  };
+
   const handleLike = async (movieId) => {
     try {
         await likeMovie(movieId);
+
+        setLikedMovies(prev => [...prev, movieId]);
 
         toast.success("Movie liked successfully!");
 
@@ -71,7 +120,7 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
               className="form-control"
               placeholder="Enter movie title..."
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => loadSuggestions(e.target.value)}
             />
 
             <button
@@ -82,6 +131,30 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
             </button>
 
           </div>
+
+          {suggestions.length > 0 && (
+
+              <ul className="list-group mb-3">
+
+                  {suggestions.map((item, index) => (
+
+                      <li
+                          key={index}
+                          className="list-group-item list-group-item-action"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                              setQuery(item);
+                              setSuggestions([]);
+                          }}
+                      >
+                          🔍 {item}
+                      </li>
+
+                  ))}
+
+              </ul>
+
+          )}
 
           {loading && (
             <div className="alert alert-info">
@@ -102,6 +175,7 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
                         movie={movie}
                         onLike={handleLike}
                         onDetails={setSelectedMovieId}
+                        isLiked={likedMovies.includes(movie.movieId)}
                     />
                   ))}
 

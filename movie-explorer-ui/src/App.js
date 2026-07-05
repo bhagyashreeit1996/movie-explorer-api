@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { getCurrentUser } from "./services/api";
 import Profile from "./pages/Profile";
+import Recommendations from "./components/Recommendations";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -23,7 +24,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [likedCount, setLikedCount] = useState(0);
   const [user, setUser] = useState(null);
-  const [showProfile, setShowProfile] = useState(false);
+  const [activePage, setActivePage] = useState("home");
 
   useEffect(() => {
   if (isLoggedIn) {
@@ -86,23 +87,22 @@ function App() {
   <>
 
     <Navbar
-        onLogout={handleLogout}
         user={user}
-        onProfile={() => setShowProfile(true)}
+        onLogout={handleLogout}
+        onHome={() => setActivePage("home")}
+        onProfile={() => setActivePage("profile")}
     />
 
     <div className="container mt-4">
 
-      <Dashboard
-          likedCount={likedCount}
-          searchCount={searchCount}
-          pageNumber={currentPage}
-      />
-
-      {showProfile ? (
-          <Profile user={user} />
-      ) : (
+      {activePage === "home" ? (
           <>
+              <Dashboard
+                  likedCount={likedCount}
+                  searchCount={searchCount}
+                  pageNumber={currentPage}
+              />
+
               <SearchMovies
                   refreshLikes={refreshLikes}
                   onSearchCompleted={handleSearchCompleted}
@@ -114,7 +114,11 @@ function App() {
                   refresh={refresh}
                   onLikedMoviesLoaded={handleLikedMoviesLoaded}
               />
+
+              <Recommendations />
           </>
+      ) : (
+          <Profile user={user} />
       )}
 
     </div>

@@ -13,6 +13,10 @@ namespace MovieExplorer.API.Core.Interfaces
         string? sortBy,
         bool isDescending);
         Task<List<Movie>> GetMoviesByIdsAsync(List<string> movieIds);
+
+        Task<List<Movie>> GetRecommendedMoviesAsync(int userId);
+
+        Task<List<string>> GetMovieSuggestionsAsync(string query);
     }
 }
 

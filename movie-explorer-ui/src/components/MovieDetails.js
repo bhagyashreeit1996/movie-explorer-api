@@ -2,61 +2,130 @@ import React, { useEffect, useState } from "react";
 import { getMovieDetails } from "../services/api";
 
 function MovieDetails({ movieId, onClose }) {
-  const [movie, setMovie] = useState(null);
 
-  useEffect(() => {
-    fetchMovie();
-  }, []);
+    const [movie, setMovie] = useState(null);
 
-  const fetchMovie = async () => {
-    const result = await getMovieDetails(movieId);
-    setMovie(result);
-  };
+    useEffect(() => {
+        loadMovie();
+    }, [movieId]);
 
-  if (!movie)
-    return <p>Loading...</p>;
+    const loadMovie = async () => {
+        try {
+            const result = await getMovieDetails(movieId);
+            setMovie(result);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    };
 
-  return (
-    <div className="card mt-4">
+    if (!movie) {
+        return null;
+    }
 
-      <div className="card-body">
+    return (
 
-        <button
-          className="btn btn-secondary float-end"
-          onClick={onClose}
+        <div
+            className="modal fade show"
+            style={{
+                display: "block",
+                backgroundColor: "rgba(0,0,0,0.7)"
+            }}
         >
-          Close
-        </button>
 
-        <h2>{movie.title}</h2>
+            <div className="modal-dialog modal-lg">
 
-        <img
-          src={movie.poster}
-          alt={movie.title}
-          width="250"
-        />
+                <div className="modal-content">
 
-        <p><b>Year:</b> {movie.year}</p>
+                    <div className="modal-header">
 
-        <p><b>Genre:</b> {movie.genre}</p>
+                        <h5 className="modal-title">
+                            {movie.title}
+                        </h5>
 
-        <p><b>Director:</b> {movie.director}</p>
+                        <button
+                            className="btn-close"
+                            onClick={onClose}
+                        />
 
-        <p><b>Actors:</b> {movie.actors}</p>
+                    </div>
 
-        <p><b>IMDb Rating:</b> ⭐ {movie.imdbRating}</p>
+                    <div className="modal-body">
 
-        <p><b>Runtime:</b> {movie.runtime}</p>
+                        <div className="row">
 
-        <p><b>Language:</b> {movie.language}</p>
+                            <div className="col-md-4">
 
-        <p><b>Plot:</b></p>
+                                <img
+                                    src={movie.poster}
+                                    alt={movie.title}
+                                    className="img-fluid rounded"
+                                />
 
-        <p>{movie.plot}</p>
+                            </div>
 
-      </div>
-    </div>
-  );
+                            <div className="col-md-8">
+
+                                <h4>{movie.title}</h4>
+
+                                <p>
+                                    ⭐ <strong>{movie.imdbRating}</strong>
+                                </p>
+
+                                <p>
+                                    <strong>Year:</strong> {movie.year}
+                                </p>
+
+                                <p>
+                                    <strong>Genre:</strong> {movie.genre}
+                                </p>
+
+                                <p>
+                                    <strong>Director:</strong> {movie.director}
+                                </p>
+
+                                <p>
+                                    <strong>Actors:</strong> {movie.actors}
+                                </p>
+
+                                <p>
+                                    <strong>Runtime:</strong> {movie.runtime}
+                                </p>
+
+                                <p>
+                                    <strong>Language:</strong> {movie.language}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <hr />
+
+                        <h5>Plot</h5>
+
+                        <p>{movie.plot}</p>
+
+                    </div>
+
+                    <div className="modal-footer">
+
+                        <button
+                            className="btn btn-secondary"
+                            onClick={onClose}
+                        >
+                            Close
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    );
 }
 
 export default MovieDetails;

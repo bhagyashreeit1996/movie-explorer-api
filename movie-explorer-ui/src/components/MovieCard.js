@@ -1,15 +1,23 @@
 import React from "react";
 
-function MovieCard({ movie, onLike, onDetails }) {
+function MovieCard({
+    movie,
+    onLike,
+    onDetails,
+    isLiked
+}) {
   return (
     <div className="col-md-4 mb-4">
       <div className="card h-100 shadow border-0">
 
         <img
           src={movie.poster}
-          className="card-img-top"
+          className="card-img-top rounded-top"
           alt={movie.title}
-          style={{ height: "420px", objectFit: "cover" }}
+          style={{
+            height: "420px",
+            objectFit: "cover"
+          }}
         />
 
         <div className="card-body">
@@ -42,17 +50,20 @@ function MovieCard({ movie, onLike, onDetails }) {
         <div className="card-footer bg-white">
 
           <button
-            className="btn btn-success btn-sm me-2"
-            onClick={() => onLike(movie.movieId)}
+              className={`btn btn-sm me-2 px-3 ${
+                  isLiked ? "btn-secondary" : "btn-success"
+              }`}
+              disabled={isLiked}
+              onClick={() => onLike(movie.movieId)}
           >
-            ❤️ Like
+              {isLiked ? "❤️ Liked" : "❤️ Like"}
           </button>
 
           <button
-            className="btn btn-primary btn-sm"
-            onClick={() => onDetails(movie.movieId)}
+              className="btn btn-outline-primary btn-sm px-3"
+              onClick={() => onDetails(movie.movieId)}
           >
-            📖 Details
+              📖 Details
           </button>
 
         </div>

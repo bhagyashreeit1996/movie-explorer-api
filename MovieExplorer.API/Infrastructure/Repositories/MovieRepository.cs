@@ -75,5 +75,47 @@ namespace MovieExplorer.API.Infrastructure.Repositories
             return (movies, totalCount);
         }
 
+        public async Task<List<Movie>> GetRecommendedMoviesAsync(int userId)
+        {
+            // Get all liked movie IDs for the user
+            var likedMovieIds = await _context.MovieLikes
+                .Where(x => x.UserId == userId)
+                .Select(x => x.MovieId)
+                .ToListAsync();
+
+            // Get genres of liked movies
+            var likedGenres = await _context.Movies
+                .Where(x => likedMovieIds.Contains(x.MovieId))
+                .Select(x => x.Genre)
+                .ToListAsync();
+
+            // Split genres into individual values
+            var genreList = likedGenres
+                .SelectMany(g => g.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                .Select(g => g.Trim())
+                .Distinct()
+                .ToList();
+
+            // Recommend movies that share at least one genre
+            var recommendations = await _context.Movies
+                .Where(m =>
+                    !likedMovieIds.Contains(m.MovieId) &&
+                    genreList.Any(g => m.Genre.Contains(g)))
+                .Take(5)
+                .ToListAsync();
+
+            return recommendations;
+        }
+
+        public async Task<List<string>> GetMovieSuggestionsAsync(string query)
+        {
+            return await _context.Movies
+                .Where(m => m.Title.StartsWith(query))
+                .Select(m => m.Title)
+                .Distinct()
+                .Take(5)
+                .ToListAsync();
+        }
+
     }
 }
