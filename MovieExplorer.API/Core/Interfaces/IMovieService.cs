@@ -7,5 +7,9 @@ namespace MovieExplorer.API.Core.Interfaces
     {
         Task<PagedResponse<MovieDto>> SearchMoviesAsync(SearchMoviesRequest request);
 
+        Task<List<RecommendationDto>> GetRecommendedMoviesAsync(int userId);
+
+        Task<List<string>> GetMovieSuggestionsAsync(string query);
+
     }
 }

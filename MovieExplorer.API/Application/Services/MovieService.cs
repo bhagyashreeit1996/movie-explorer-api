@@ -48,6 +48,24 @@ namespace MovieExplorer.API.Application.Services
             };
         }
 
+        public async Task<List<RecommendationDto>> GetRecommendedMoviesAsync(int userId)
+        {
+            var movies = await _movieRepository.GetRecommendedMoviesAsync(userId);
+
+            return movies.Select(m => new RecommendationDto
+            {
+                MovieId = m.MovieId,
+                Title = m.Title,
+                Year = m.Year,
+                Genre = m.Genre
+            }).ToList();
+        }
+
+        public async Task<List<string>> GetMovieSuggestionsAsync(string query)
+        {
+            return await _movieRepository.GetMovieSuggestionsAsync(query);
+        }
+
     }
 }
 

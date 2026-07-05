@@ -1,8 +1,9 @@
 import React from "react";
 
 function Navbar({
-    onLogout,
     user,
+    onLogout,
+    onHome,
     onProfile
 }) {
   return (
@@ -17,17 +18,24 @@ function Navbar({
         <div className="ms-auto d-flex align-items-center">
 
           <button
-              className="btn btn-link text-white text-decoration-none me-3"
-              onClick={onProfile}
+              className="btn btn-link text-white me-3"
+              onClick={onHome}
           >
-              👋 Welcome, {user?.name}
+              🏠 Home
           </button>
 
           <button
-            className="btn btn-outline-light"
-            onClick={onLogout}
+              className="btn btn-link text-white me-3"
+              onClick={onProfile}
           >
-            Logout
+              👤 {user?.name}
+          </button>
+
+          <button
+              className="btn btn-outline-light"
+              onClick={onLogout}
+          >
+              Logout
           </button>
 
         </div>

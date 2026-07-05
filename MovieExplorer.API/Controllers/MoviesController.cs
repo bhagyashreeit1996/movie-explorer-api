@@ -98,6 +98,31 @@ namespace MovieExplorer.API.Controllers
             return Ok(movie);
         }
 
+        [Authorize]
+        [HttpGet("recommendations")]
+        public async Task<IActionResult> GetRecommendations()
+        {
+            var userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var recommendations = await _movieService
+                .GetRecommendedMoviesAsync(userId);
+
+            return Ok(recommendations);
+        }
+
+        [HttpGet("suggestions")]
+        public async Task<IActionResult> GetSuggestions([FromQuery] string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return Ok(new List<string>());
+
+            var suggestions = await _movieService
+                .GetMovieSuggestionsAsync(query);
+
+            return Ok(suggestions);
+        }
+
     }
 }
 

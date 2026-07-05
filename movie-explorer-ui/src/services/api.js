@@ -47,4 +47,17 @@ export const getCurrentUser = async () => {
   return response.data;
 };
 
+export const getRecommendations = async () => {
+    const response = await api.get("/movies/recommendations");
+    return response.data;
+};
+
+export const getMovieSuggestions = async (query) => {
+    const response = await api.get(
+        `/movies/suggestions?query=${query}`
+    );
+
+    return response.data;
+};
+
 
