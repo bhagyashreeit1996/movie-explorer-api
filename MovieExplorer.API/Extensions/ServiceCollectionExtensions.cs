@@ -4,6 +4,7 @@ using MovieExplorer.API.Core.Interfaces;
 using MovieExplorer.API.Infrastructure.Repositories;
 using MovieExplorer.API.Application.Services;
 using MovieExplorer.API.Core.Services;
+using MovieExplorer.API.Infrastructure.Services;
 
 namespace MovieExplorer.API.Extensions
 {
@@ -26,6 +27,9 @@ namespace MovieExplorer.API.Extensions
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddScoped<IOmdbService, OmdbService>();
+
+            // Cache service
+            services.AddScoped<ICacheService, RedisCacheService>();
 
             return services;
         }
