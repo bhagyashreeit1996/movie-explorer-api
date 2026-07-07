@@ -24,11 +24,20 @@ function Login({ onLogin, onRegister })  {
 
       toast.success("Login successful!");
 
-      onLogin();
+      setTimeout(() => {
+          onLogin();
+      }, 1000);
     }
     catch (error) {
-      toast.error("Invalid email or password.");
-      console.error(error);
+      console.log("Status:", error.response?.status);
+      console.log("Data:", error.response?.data);
+
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Something went wrong.";
+
+      toast.error(message);
     }
   };
 
