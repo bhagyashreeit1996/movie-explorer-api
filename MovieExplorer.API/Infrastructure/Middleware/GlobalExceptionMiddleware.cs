@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using MovieExplorer.API.Core.Exceptions;
+using MovieExplorer.API.Exceptions;
 
 namespace MovieExplorer.API.Infrastructure.Middleware
 {
@@ -35,6 +36,14 @@ namespace MovieExplorer.API.Infrastructure.Middleware
 
             switch (exception)
             {
+                case InvalidCredentialsException:
+                    response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    break;
+
+                case UserAlreadyExistsException:
+                    response.StatusCode = (int)(HttpStatusCode.Conflict);
+                    break;
+
                 case MovieNotFoundException:
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;

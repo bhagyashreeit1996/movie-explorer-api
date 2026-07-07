@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using MovieExplorer.API.Exceptions;
 
 namespace MovieExplorer.API.Core.Services
 {
@@ -35,7 +36,7 @@ namespace MovieExplorer.API.Core.Services
                     .GetByEmailAsync(request.Email);
 
             if (existingUser != null)
-                throw new Exception("User already exists.");
+                throw new UserAlreadyExistsException();
 
             var user = new User
             {
@@ -57,10 +58,10 @@ namespace MovieExplorer.API.Core.Services
                     .GetByEmailAsync(request.Email);
 
             if (user == null)
-                throw new Exception("Invalid email or password.");
+                throw new InvalidCredentialsException();
 
             if (user.PasswordHash != request.Password)
-                throw new Exception("Invalid email or password.");
+                throw new InvalidCredentialsException();
 
             var token = GenerateJwtToken(user);
 

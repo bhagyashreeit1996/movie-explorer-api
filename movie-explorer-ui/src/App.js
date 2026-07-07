@@ -67,24 +67,30 @@ function App() {
   };
 
   if (!isLoggedIn) {
-  if (showRegister) {
+    if (showRegister) {
+      return (
+        <>
+          <Register
+            onBackToLogin={() => setShowRegister(false)}
+          />
+          <ToastContainer position="top-right" autoClose={3000} />
+        </>
+      );
+    }
+
     return (
-      <Register
-        onBackToLogin={() => setShowRegister(false)}
-      />
+      <>
+        <Login
+          onLogin={handleLogin}
+          onRegister={() => setShowRegister(true)}
+        />
+        <ToastContainer position="top-right" autoClose={3000} />
+      </>
     );
   }
 
   return (
-    <Login
-      onLogin={handleLogin}
-      onRegister={() => setShowRegister(true)}
-    />
-  );
-  }
-
-  return (
-  <>
+    <>
 
     <Navbar
         user={user}

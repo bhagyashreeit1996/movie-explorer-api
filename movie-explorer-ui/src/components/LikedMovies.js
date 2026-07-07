@@ -36,7 +36,7 @@ function LikedMovies({ refresh, onLikedMoviesLoaded }) {
       fetchLikes();
     } catch (error) {
       console.error(error);
-      alert("Unable to unlike movie.");
+      toast.success("Unable to unlike movie.");
     }
   };
 
