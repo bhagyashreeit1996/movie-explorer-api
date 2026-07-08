@@ -1,0 +1,50 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: movieexplorer-sqlserver
+
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SA_PASSWORD}
+
+    ports:
+      - "1433:1433"
+
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+    restart: unless-stopped
+
+  movieexplorer-api:
+    build:
+      context: ./MovieExplorer.API
+      dockerfile: Dockerfile
+
+    container_name: movieexplorer-api
+
+    depends_on:
+      - sqlserver
+
+    ports:
+      - "7176:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=MovieExplorerDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+
+  movieexplorer-ui:
+    build:
+      context: ./movie-explorer-ui
+      dockerfile: Dockerfile
+
+    container_name: movieexplorer-ui
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      - movieexplorer-api
+
+volumes:
+  sqlserver_data:
