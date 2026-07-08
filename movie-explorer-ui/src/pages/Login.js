@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const API_BASE = "https://localhost:7176/api";
+const API_BASE = process.env.REACT_APP_API_BASE;;
 
 function Login({ onLogin, onRegister })  {
   const [email, setEmail] = useState("");
