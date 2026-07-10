@@ -11,41 +11,22 @@ namespace MovieExplorer.API.Application.Services
     public class MovieService : IMovieService
     {
         private readonly IMovieRepository _movieRepository;
+        private readonly IOmdbService _omdbService;
 
-        public MovieService(IMovieRepository movieRepository)
-        {
-            _movieRepository = movieRepository;
-        }
+        public MovieService(
+            IMovieRepository movieRepository,
+            IOmdbService omdbService)
+                {
+                    _movieRepository = movieRepository;
+                    _omdbService = omdbService;
+                }
 
         public async Task<PagedResponse<MovieDto>> SearchMoviesAsync(SearchMoviesRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Query))
                 throw new ArgumentException("Search query is required.");
 
-            var (movies, totalCount) = await _movieRepository.SearchAsync(
-                request.Query,
-                request.PageNumber,
-                request.PageSize,
-                request.SortBy,
-                request.IsDescending);
-
-            var dtoList = movies.Select(m => new MovieDto
-            {
-                MovieId = m.MovieId,
-                Title = m.Title,
-                Year = m.Year,
-                Genre = m.Genre,
-                Poster = "https://via.placeholder.com/300x450?text=Movie",
-                ImdbRating = "N/A"
-            }).ToList();
-
-            return new PagedResponse<MovieDto>
-            {
-                TotalCount = totalCount,
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize,
-                Data = dtoList
-            };
+            return await _omdbService.SearchMoviesAsync(request);
         }
 
         public async Task<List<RecommendationDto>> GetRecommendedMoviesAsync(int userId)
