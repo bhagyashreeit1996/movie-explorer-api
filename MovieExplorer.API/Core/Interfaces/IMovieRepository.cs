@@ -6,6 +6,9 @@ namespace MovieExplorer.API.Core.Interfaces
     {
         //Task GetByMovieIdAsync(string movieId);
         Task<Movie?> GetByMovieIdAsync(string movieId);
+
+        Task AddAsync(Movie movie);
+
         Task<(List<Movie> Movies, int TotalCount)> SearchAsync(
         string query,
         int pageNumber,

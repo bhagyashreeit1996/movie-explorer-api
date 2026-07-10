@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { getLikedMovies, unlikeMovie } from "../services/api";
 import { toast } from "react-toastify";
 
-function LikedMovies({ refresh, onLikedMoviesLoaded }) {
+function LikedMovies({
+    refresh,
+    onLikedMoviesLoaded,
+    likedMovieIds,
+    setLikedMovieIds
+}) {
   const [movies, setMovies] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize] = useState(2);
@@ -31,12 +36,16 @@ function LikedMovies({ refresh, onLikedMoviesLoaded }) {
     try {
       await unlikeMovie(movieId);
 
+      setLikedMovieIds(prev =>
+          prev.filter(id => id !== movieId)
+      );
+
       toast.success("Movie removed from liked list.");
 
       fetchLikes();
     } catch (error) {
       console.error(error);
-      toast.success("Unable to unlike movie.");
+      toast.error("Unable to unlike movie.");
     }
   };
 

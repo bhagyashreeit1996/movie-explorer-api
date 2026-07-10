@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { getCurrentUser } from "./services/api";
 import Profile from "./pages/Profile";
 import Recommendations from "./components/Recommendations";
+import { getLikedMovies } from "./services/api";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -23,13 +24,15 @@ function App() {
   const [searchCount, setSearchCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [likedCount, setLikedCount] = useState(0);
+  const [likedMovieIds, setLikedMovieIds] = useState([]);
   const [user, setUser] = useState(null);
   const [activePage, setActivePage] = useState("home");
 
   useEffect(() => {
-  if (isLoggedIn) {
-    loadCurrentUser();
-  }
+      if (isLoggedIn) {
+          loadCurrentUser();
+          loadLikedMovieIds();
+      }
   }, [isLoggedIn]);
 
   const loadCurrentUser = async () => {
@@ -39,10 +42,23 @@ function App() {
   } catch (error) {
     console.error(error);
   }
-};
+  };
+  const loadLikedMovieIds = async () => {
+    try {
+        const result = await getLikedMovies(1, 1000);
+
+        const ids = result.data.map(movie => movie.movieId);
+
+        setLikedMovieIds(ids);
+    }
+    catch (error) {
+        console.error(error);
+    }
+    };
 
   const refreshLikes = () => {
-    setRefresh(!refresh);
+      setRefresh(prev => !prev);
+      loadLikedMovieIds();
   };
 
   const handleLogin = () => {
@@ -112,6 +128,8 @@ function App() {
               <SearchMovies
                   refreshLikes={refreshLikes}
                   onSearchCompleted={handleSearchCompleted}
+                  likedMovieIds={likedMovieIds}
+                  setLikedMovieIds={setLikedMovieIds}
               />
 
               <hr />
@@ -119,6 +137,8 @@ function App() {
               <LikedMovies
                   refresh={refresh}
                   onLikedMoviesLoaded={handleLikedMoviesLoaded}
+                  likedMovieIds={likedMovieIds}
+                  setLikedMovieIds={setLikedMovieIds}
               />
 
               <Recommendations />
