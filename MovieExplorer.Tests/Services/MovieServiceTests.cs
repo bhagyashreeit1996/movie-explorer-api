@@ -17,13 +17,17 @@ namespace MovieExplorer.Tests.Services
     public class MovieServiceTests
     {
         private readonly Mock<IMovieRepository> _movieRepositoryMock;
+        private readonly Mock<IOmdbService> _omdbServiceMock;
         private readonly MovieService _movieService;
 
         public MovieServiceTests()
         {
             _movieRepositoryMock = new Mock<IMovieRepository>();
+            _omdbServiceMock = new Mock<IOmdbService>();
 
-            _movieService = new MovieService(_movieRepositoryMock.Object);
+            _movieService = new MovieService(
+                _movieRepositoryMock.Object,
+                _omdbServiceMock.Object);
         }
 
         [Fact]
@@ -40,23 +44,28 @@ namespace MovieExplorer.Tests.Services
                 IsDescending = false
             };
 
-            var movies = new List<Movie>
+            var response = new PagedResponse<MovieDto>
             {
-                new Movie(
-                    "tt0848228",
-                    "The Avengers",
-                    2012,
-                    "Action")
+                TotalCount = 1,
+                PageNumber = 1,
+                PageSize = 5,
+                Data = new List<MovieDto>
+    {
+                    new MovieDto
+                    {
+                        MovieId = "tt0848228",
+                        Title = "The Avengers",
+                        Year = 2012,
+                        Genre = "Action",
+                        Poster = "poster.jpg",
+                        ImdbRating = "8.0"
+                    }
+                }
             };
 
-            _movieRepositoryMock
-                .Setup(x => x.SearchAsync(
-                    request.Query,
-                    request.PageNumber,
-                    request.PageSize,
-                    request.SortBy,
-                    request.IsDescending))
-                .ReturnsAsync((movies, 1));
+            _omdbServiceMock
+                .Setup(x => x.SearchMoviesAsync(request))
+                .ReturnsAsync(response);
 
             //Act
 
@@ -81,13 +90,8 @@ namespace MovieExplorer.Tests.Services
             movie.Year.Should().Be(2012);
             movie.Genre.Should().Be("Action");
 
-            _movieRepositoryMock.Verify(
-                x => x.SearchAsync(
-                    request.Query,
-                    request.PageNumber,
-                    request.PageSize,
-                    request.SortBy,
-                    request.IsDescending),
+            _omdbServiceMock.Verify(
+                x => x.SearchMoviesAsync(request),
                 Times.Once);
 
         }
@@ -114,13 +118,8 @@ namespace MovieExplorer.Tests.Services
                 .ThrowAsync<ArgumentException>()
                 .WithMessage("Search query is required.");
 
-            _movieRepositoryMock.Verify(
-                x => x.SearchAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<int>(),
-                    It.IsAny<int>(),
-                    It.IsAny<string>(),
-                    It.IsAny<bool>()),
+            _omdbServiceMock.Verify(
+                x => x.SearchMoviesAsync(It.IsAny<SearchMoviesRequest>()),
                 Times.Never);
         }
 

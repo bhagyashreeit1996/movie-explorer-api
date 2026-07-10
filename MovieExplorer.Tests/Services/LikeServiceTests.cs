@@ -12,17 +12,18 @@ namespace MovieExplorer.Tests.Services
         private readonly Mock<IMovieRepository> _movieRepositoryMock;
         private readonly Mock<IMovieLikeRepository> _movieLikeRepositoryMock;
         private readonly LikeService _likeService;
+        private readonly Mock<IOmdbService> _omdbServiceMock;
 
         public LikeServiceTests()
         {
             _movieRepositoryMock = new Mock<IMovieRepository>();
-
-            _movieLikeRepositoryMock =
-                new Mock<IMovieLikeRepository>();
+            _movieLikeRepositoryMock = new Mock<IMovieLikeRepository>();
+            _omdbServiceMock = new Mock<IOmdbService>();
 
             _likeService = new LikeService(
                 _movieRepositoryMock.Object,
-                _movieLikeRepositoryMock.Object);
+                _movieLikeRepositoryMock.Object,
+                _omdbServiceMock.Object);
         }
 
         [Fact]

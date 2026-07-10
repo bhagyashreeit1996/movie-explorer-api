@@ -5,12 +5,16 @@ import MovieCard from "./MovieCard";
 import { toast } from "react-toastify";
 import { getMovieSuggestions } from "../services/api";
 
-function SearchMovies({ refreshLikes, onSearchCompleted }) {
+function SearchMovies({
+    refreshLikes,
+    onSearchCompleted,
+    likedMovieIds,
+    setLikedMovieIds
+}) {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [movies, setMovies] = useState([]);
-  const [likedMovies, setLikedMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   
@@ -90,7 +94,7 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
     try {
         await likeMovie(movieId);
 
-        setLikedMovies(prev => [...prev, movieId]);
+        setLikedMovieIds(prev => [...prev, movieId]);
 
         toast.success("Movie liked successfully!");
 
@@ -99,7 +103,15 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
     catch (error) {
         console.error(error);
 
-        toast.error("Movie already liked.");
+        console.log("Status:", error.response?.status);
+        console.log("Response:", error.response?.data);
+
+        const message =
+            error.response?.data?.error ||
+            error.response?.data?.message ||
+            "Unable to like movie.";
+
+        toast.error(message);
     }
 };
 
@@ -175,7 +187,7 @@ function SearchMovies({ refreshLikes, onSearchCompleted }) {
                         movie={movie}
                         onLike={handleLike}
                         onDetails={setSelectedMovieId}
-                        isLiked={likedMovies.includes(movie.movieId)}
+                        isLiked={likedMovieIds.includes(movie.movieId)}
                     />
                   ))}
 

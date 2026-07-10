@@ -1,4 +1,5 @@
 ﻿using MovieExplorer.API.Application.DTOs;
+using MovieExplorer.API.Application.Services;
 using MovieExplorer.API.Core.Exceptions;
 using MovieExplorer.API.Core.Interfaces;
 using MovieExplorer.API.Core.Models;
@@ -8,21 +9,40 @@ public class LikeService : ILikeService
 {
     private readonly IMovieRepository _movieRepository;
     private readonly IMovieLikeRepository _movieLikeRepository;
+    private readonly IOmdbService _omdbService;
 
     public LikeService(
-        IMovieRepository movieRepository,
-        IMovieLikeRepository movieLikeRepository)
-    {
-        _movieRepository = movieRepository;
-        _movieLikeRepository = movieLikeRepository;
-    }
+            IMovieRepository movieRepository,
+            IMovieLikeRepository movieLikeRepository,
+            IOmdbService omdbService)
+            {
+                _movieRepository = movieRepository;
+                _movieLikeRepository = movieLikeRepository;
+                _omdbService = omdbService;
+            }
 
     public async Task LikeMovieAsync(int userId, string movieId)
     {
         var movie = await _movieRepository.GetByMovieIdAsync(movieId);
 
         if (movie == null)
-            throw new MovieNotFoundException(movieId);
+        {
+            var movieDetails = await _omdbService.GetMovieDetailsAsync(movieId);
+
+            if (movieDetails == null)
+                throw new MovieNotFoundException(movieId);
+
+            int year = 0;
+            int.TryParse(movieDetails.Year, out year);
+
+            movie = new Movie(
+                movieId,
+                movieDetails.Title,
+                year,
+                movieDetails.Genre);
+
+            await _movieRepository.AddAsync(movie);
+        }
 
         var alreadyLiked =
             await _movieLikeRepository.IsLikedAsync(userId, movieId);

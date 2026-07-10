@@ -29,12 +29,16 @@ function Login({ onLogin, onRegister })  {
       }, 1000);
     }
     catch (error) {
+      console.log("FULL ERROR:", error);
       console.log("Status:", error.response?.status);
       console.log("Data:", error.response?.data);
+      console.log("Message:", error.message);
+      console.log("Request:", error.request);
 
       const message =
         error.response?.data?.message ||
         error.response?.data?.error ||
+        error.message ||
         "Something went wrong.";
 
       toast.error(message);
