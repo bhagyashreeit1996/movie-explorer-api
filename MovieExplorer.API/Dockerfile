@@ -2,14 +2,22 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /src
 
-COPY . .
+# Copy only project file first
+COPY MovieExplorer.API.csproj ./
 
+# Restore NuGet packages
 RUN dotnet restore MovieExplorer.API.csproj
 
+# Copy remaining source
+COPY . .
+
+# Publish application
 RUN dotnet publish MovieExplorer.API.csproj \
     -c Release \
-    -o /app/publish
+    -o /app/publish \
+    --no-restore
 
+# Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 WORKDIR /app

@@ -107,8 +107,38 @@ namespace MovieExplorer.API.Application.Services
 
         }
 
+
         public async Task<PagedResponse<MovieDto>> SearchMoviesAsync(SearchMoviesRequest request)
         {
+
+            var cacheKey =
+                $"movie_search_{request.Query}_{request.PageNumber}";
+
+            try
+            {
+                var cachedResult =
+                    await _cacheService.GetAsync<PagedResponse<MovieDto>>(cacheKey);
+
+                if (cachedResult != null)
+                {
+                    _logger.LogInformation(
+                        "Redis HIT : {CacheKey}",
+                        cacheKey);
+
+                    return cachedResult;
+                }
+
+                _logger.LogInformation(
+                    "Redis MISS : {CacheKey}",
+                    cacheKey);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Redis unavailable. Calling OMDb.");
+            }
+
             var apiKey = _configuration["Omdb:ApiKey"];
             var baseUrl = _configuration["Omdb:BaseUrl"];
 
@@ -159,16 +189,33 @@ namespace MovieExplorer.API.Application.Services
 
             }).ToList();
 
-            return new PagedResponse<MovieDto>
+            var pagedResult = new PagedResponse<MovieDto>
             {
                 Data = movies,
-
                 TotalCount = int.Parse(result.TotalResults ?? "0"),
-
                 PageNumber = request.PageNumber,
-
                 PageSize = request.PageSize
             };
+
+            try
+            {
+                await _cacheService.SetAsync(
+                    cacheKey,
+                    pagedResult,
+                    TimeSpan.FromMinutes(30));
+
+                _logger.LogInformation(
+                    "Redis SET : {CacheKey}",
+                    cacheKey);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Redis unavailable. Search result not cached.");
+            }
+
+            return pagedResult;
         }
 
     }

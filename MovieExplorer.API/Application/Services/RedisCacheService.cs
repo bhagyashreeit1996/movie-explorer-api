@@ -18,7 +18,12 @@ namespace MovieExplorer.API.Infrastructure.Services
             var cachedValue = await _cache.GetStringAsync(key);
 
             if (string.IsNullOrEmpty(cachedValue))
+            {
+                Console.WriteLine($"Redis MISS : {key}");
                 return default;
+            }
+
+            Console.WriteLine($"Redis HIT : {key}");
 
             return JsonSerializer.Deserialize<T>(cachedValue);
         }
@@ -34,6 +39,8 @@ namespace MovieExplorer.API.Infrastructure.Services
             };
 
             var json = JsonSerializer.Serialize(value);
+
+            Console.WriteLine($"Redis SET : {key}");
 
             await _cache.SetStringAsync(
                 key,

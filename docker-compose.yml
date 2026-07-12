@@ -15,6 +15,28 @@ services:
 
     restart: unless-stopped
 
+    healthcheck:
+      test: ["CMD-SHELL", "pidof sqlservr || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: movieexplorer-redis
+
+    ports:
+      - "6379:6379"
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   movieexplorer-api:
     build:
       context: ./MovieExplorer.API
@@ -24,6 +46,7 @@ services:
 
     depends_on:
       - sqlserver
+      - redis
 
     ports:
       - "7176:8080"
@@ -31,7 +54,12 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=MovieExplorerDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=${MSSQL_DB};User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+
+      Redis__ConnectionString: redis:6379
+
+    restart: unless-stopped
 
   movieexplorer-ui:
     build:
@@ -40,11 +68,13 @@ services:
 
     container_name: movieexplorer-ui
 
+    depends_on:
+      - movieexplorer-api
+
     ports:
       - "3000:80"
 
-    depends_on:
-      - movieexplorer-api
+    restart: unless-stopped
 
 volumes:
   sqlserver_data:

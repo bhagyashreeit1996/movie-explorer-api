@@ -463,3 +463,32 @@ $RECYCLE.BIN/
 ## User-specific appsettings (optional override)
 ##
 appsettings.Local.json
+
+####################################################
+# Docker
+####################################################
+
+# Environment files
+.env
+.env.*
+
+# Keep the sample environment file
+!.env.example
+
+# Docker override files
+docker-compose.override.yml
+
+# Docker logs
+*.docker.log
+
+####################################################
+# React build output
+####################################################
+
+movie-explorer-ui/build/
+
+####################################################
+# API logs
+####################################################
+
+MovieExplorer.API/Logs/
